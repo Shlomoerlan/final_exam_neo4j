@@ -1,14 +1,20 @@
 from flask import Blueprint
 from app.repository.phone_repository import find_bluetooth_connections, \
-    find_strong_signal_connections, count_connected_devices, is_connected, fetch_most_recent_interaction
-from flask import Flask, request, jsonify
+    find_strong_signal_connections, count_connected_devices, is_connected, fetch_most_recent_interaction, \
+    path_for_bluetooth
+from flask import request, jsonify
 
 phone_blueprint = Blueprint("phone", __name__)
 
-@phone_blueprint.route("/bluetooth", methods=['GET'])
+@phone_blueprint.route("/bluetooth1", methods=['GET'])
 def get_bluetooth_connections():
     connections = find_bluetooth_connections()
     return jsonify(connections), 200
+
+@phone_blueprint.route("/bluetooth2", methods=['GET'])
+def get_bluetooth_path():
+    path, length = path_for_bluetooth()
+    return jsonify({"path": path, "length": length}), 200
 
 @phone_blueprint.route("/strong-signal", methods=['GET'])
 def get_strong_signal_connections():

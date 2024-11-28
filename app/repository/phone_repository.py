@@ -88,3 +88,19 @@ def count_device_connections(device_id):
         """
         result = session.run(query, {"device_id": device_id}).single()
         return result["connection_count"] if result else 0
+
+def path_for_bluetooth():
+    with driver.session() as session:
+        query = """
+        MATCH (start:DeviceLocation)
+        MATCH (end:DeviceLocation)
+        WHERE start <> end
+        MATCH path = shortestPath((start)-[:CONNECTED*]->(end))
+        WHERE ALL(r IN relationships(path) WHERE r.method = "Bluetooth")
+        WITH path, length(path) as pathLength
+        ORDER BY pathLength DESC
+        LIMIT 1
+        RETURN path
+        """
+        result = session.run(query).data()
+        return (result, len(result[0]["path"]))if result else 0
