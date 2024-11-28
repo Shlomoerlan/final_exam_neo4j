@@ -1,5 +1,3 @@
-from operator import itemgetter
-from returns.maybe import Maybe
 from app.db.database import driver
 
 
